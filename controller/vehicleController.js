@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const User = require("../model/userModel");
 const Vehicle = require("../model/vehicleModels");
 
 //this is to create a vehicle
@@ -22,10 +23,18 @@ const createVehicle = asyncHandler(async (req, res) => {
       proofOfOwnership,
       plateNumber,
     });
-
     if (vehicle) {
-      return res.status(200).json(vehicle);
+      const VehicleOwner = await User.findOne({ _id: userId });
+      VehicleOwner.fleet.fleet_size = VehicleOwner.fleet.fleet_size + 1;
+      VehicleOwner.fleet.vehicles = [
+        ...VehicleOwner.fleet.vehicles,
+        vehicle._id,
+      ];
+
+      console.log(vehicle._id);
+      await VehicleOwner.save();
     }
+    return res.status(200).json(vehicle);
   } catch (error) {
     return res.status(400).json(error);
   }

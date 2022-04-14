@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Report = require("../model/reportModel");
+const User = require("../model/userModel");
 
 const createReport = asyncHandler(async (req, res) => {
   const { userId, reporterType, caseId, title, content } = req.body;
@@ -11,14 +12,24 @@ const createReport = asyncHandler(async (req, res) => {
   }
 
   try {
-    const report = await Report.create({
+    const newReport = await Report.create({
       userId,
       reporterType,
       caseId,
       title,
       content,
     });
-    return res.status(200).json(report);
+
+    await User.findByIdAndUpdate(
+      { _id: userId },
+      {
+        $push: {
+          reports: newReport._id,
+        },
+      }
+    );
+
+    return res.status(200).json(newReport);
   } catch (error) {
     res.status(400).json(error);
   }
@@ -69,8 +80,12 @@ const editSingleReport = asyncHandler(async (req, res) => {
 });
 
 const deleteAReport = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
   try {
     const deletingReport = await Report.findByIdAndDelete(req.params.id);
+
+    await User.findByIdAndUpdate({});
+
     res.status(202).json(deletingReport);
   } catch (error) {
     res.status(404).json(error);

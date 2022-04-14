@@ -62,47 +62,51 @@ const EditUser = asyncHandler(async (req, res) => {
     email,
     subscription,
     acct_details,
-    ratiingNo,
+    ratingNo,
     no_of_reviews,
     password,
+    phone,
+    photo,
+    total_repairs,
+    fleet,
+    reports,
+    transaction_hist,
   } = req.body;
 
+  //new user object
+  const newUserEdit = {
+    firstName,
+    lastName,
+    email,
+    password,
+    phone,
+    photo,
+    finance: {
+      subscription,
+      acct_details,
+      transaction_hist,
+    },
+
+    // activity: {
+    //   rating: {
+    //     ratingNo,
+    //     no_of_reviews,
+    //   },
+    // },
+    // fleet:{
+    //   fleet_size
+    // }
+  };
+
   try {
-    const userEdited = {
-      firstName,
-      lastName,
-      email,
-      password,
-      phone,
-      photo,
-      finance: {
-        subscription,
-        acct_details,
-        trasaction_hist: [],
-      },
-      activity: {
-        rating: {
-          ratingNo,
-          no_of_reviews,
-        },
-      },
-      reports: [...reports],
-      fleet,
-      tota_repairs,
-      vehicles,
-    };
-
-    const editingUser = await User.findByIdAndUpdate(
+    // console.log(await User.findOne(req.params.id));
+    const updatingUser = await User.findByIdAndUpdate(
       req.params.id,
-      // userEdited,
-
+      // newUserEdit,
       req.body,
-      {
-        returnOriginal: false,
-      }
+      { returnOriginal: false }
     );
-    console.log(editingUser);
-    return res.status(200).json(editingUser);
+    res.status(200).json(editingUser);
   } catch (error) {
     res.status(404).json(error);
   }
@@ -120,6 +124,15 @@ const DeleteUser = asyncHandler(async (req, res) => {
   }
 });
 
+const getOneUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    return res.status(200).json(user);
+  } catch (error) {
+    res.json(400).json(error);
+  }
+});
+
 const getAllUsers = asyncHandler(async (req, res) => {
   try {
     const allUser = await User.find();
@@ -129,4 +142,11 @@ const getAllUsers = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { RegisterUser, LoginUser, EditUser, DeleteUser, getAllUsers };
+module.exports = {
+  RegisterUser,
+  LoginUser,
+  EditUser,
+  DeleteUser,
+  getAllUsers,
+  getOneUser,
+};
