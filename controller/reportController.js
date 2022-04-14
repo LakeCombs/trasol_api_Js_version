@@ -80,11 +80,18 @@ const editSingleReport = asyncHandler(async (req, res) => {
 });
 
 const deleteAReport = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
   try {
     const deletingReport = await Report.findByIdAndDelete(req.params.id);
+    const userId = deletingReport.userId;
+    console.log(userId);
 
-    await User.findByIdAndUpdate({});
+    // const userDetails = await Report.findOne({ deletingReport.userId });
+    // console.log(deleteAReport);
+
+    await User.findByIdAndUpdate(
+      { _id: userId },
+      { $pull: { reports: deletingReport._id } }
+    );
 
     res.status(202).json(deletingReport);
   } catch (error) {
