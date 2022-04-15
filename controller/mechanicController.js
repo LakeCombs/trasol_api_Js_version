@@ -130,19 +130,55 @@ const editOneMechanicData = asyncHandler(async (req, res) => {
 
 //this route help find mechanic by address core phonenumber experience car_they_can_fix etc
 const getMehanicByFilter = asyncHandler(async (req, res) => {
-  const { car1, car2, car3, proof_of_years_of_experience, phone, address } =
-    req.body;
+  const {
+    car1,
+    car2,
+    car3,
+    proof_of_years_of_experience,
+    phone,
+    address,
+    core,
+  } = req.body;
   try {
     const filterMechanic = await Mechanic.find({
       $or: [
         { address: address },
         { phone: phone },
+        { core: core },
         { proof_of_years_of_experience: proof_of_years_of_experience },
         { car_they_can_fix: { $in: [car1, car2, car3] } },
       ],
     });
 
-    return res.status.json(filterMechanic);
+    return res.status(200).json(filterMechanic);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+//to use this route you must have a car1 you
+//i will still work onthis route so that we can deepsearch by many factors
+//like cars location year_of_experience
+const getMechanicByDeepSearch = asyncHandler(async (req, res) => {
+  const { car1, core } = req.body;
+  try {
+    const filterMechanicByDeepSearch = await Mechanic.find({
+      $and: [
+        // { address: address ? address : "" },
+        { core: core },
+        {
+          car_they_can_fix: {
+            $in: [car1],
+          },
+        },
+      ],
+    });
+
+    if (!filterMechanicByDeepSearch.length) {
+      res.status(200).json({ message: "No match found" });
+    } else {
+      return res.status(200).json(filterMechanicByDeepSearch);
+    }
   } catch (error) {
     res.status(400).json(error);
   }
@@ -155,4 +191,5 @@ module.exports = {
   getOneMechanicById,
   editOneMechanicData,
   getMehanicByFilter,
+  getMechanicByDeepSearch,
 };

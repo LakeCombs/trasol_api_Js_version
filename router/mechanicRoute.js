@@ -6,6 +6,7 @@ const {
   getOneMechanicById,
   editOneMechanicData,
   getMehanicByFilter,
+  getMechanicByDeepSearch,
 } = require("../controller/mechanicController");
 const protect = require("../middleware/authenticationMiddeware");
 
@@ -15,6 +16,7 @@ MechanicRoute.post("/register", registerMechanic);
 MechanicRoute.post("/login", loginMechanic);
 MechanicRoute.get("/", getAllMechanic);
 MechanicRoute.get("/filter", getMehanicByFilter);
+MechanicRoute.get("/deepsearch", getMechanicByDeepSearch);
 MechanicRoute.get("/:id", getOneMechanicById);
 MechanicRoute.put("/:id", protect, editOneMechanicData);
 
