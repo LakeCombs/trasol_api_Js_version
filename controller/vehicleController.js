@@ -130,7 +130,7 @@ const getVehicleByFilter = asyncHandler(async (req, res) => {
         { plateNumber: plateNumber },
         { proofOfOwnership: proofOfOwnership },
       ],
-    });
+    }).populate("userId", "-password");
 
     return res.status(200).json(filterCars);
   } catch (error) {

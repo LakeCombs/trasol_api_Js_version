@@ -32,8 +32,8 @@ const mechanicSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-mechanicSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+mechanicSchema.methods.matchPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
 
 mechanicSchema.pre("save", async function (next) {
