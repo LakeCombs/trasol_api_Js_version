@@ -1,26 +1,22 @@
 const mongoose = require("mongoose");
-const vehicle = require("./vehicleModels");
 
-const RequestForMechanic = new mongoose(
+const RequestForMechanic = new mongoose.Schema(
   {
-    GPSlocation: {
-      type: String,
-      required: true,
-    },
-
-    car: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: vehicle,
-    },
-    description: {
-      type: String,
+      ref: "User",
       required: true,
     },
-    otherDetails: {
-      type: String,
-    },
+    GPSlocation: { type: String, required: true },
+    vehicle: { type: mongoose.Schema.Types, ref: "Vehicle", required: true },
+    description: { type: String, required: true },
+    otherDetails: { type: String },
+    mechanicId: { type: mongoose.Schema.Types.ObjectId, ref: "Mechanic" },
+    service_rating: { type: Number },
+    mechanic_rating: { type: Number },
+    comment: { type: String },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("RequesForMech", RequestForMechanic);
+module.exports = mongoose.model("RequestForMech", RequestForMechanic);

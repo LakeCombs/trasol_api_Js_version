@@ -142,6 +142,14 @@ const getAllUsers = asyncHandler(async (req, res) => {
   }
 });
 
+const requestMechanic = asyncHandler(async (req, res) => {
+  const {} = req.body;
+  try {
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 module.exports = {
   RegisterUser,
   LoginUser,
@@ -149,4 +157,5 @@ module.exports = {
   DeleteUser,
   getAllUsers,
   getOneUser,
+  requestMechanic,
 };
