@@ -2,6 +2,7 @@ const express = require("express");
 const ReportRoute = require("../router/reportRoute");
 const UserRoute = require("../router/userRoute");
 const VehicleRoute = require("../router/vehicleRoute");
+const MechanicRoute = require("../router/mechanicRoute");
 
 const v1 = express.Router();
 
@@ -12,5 +13,6 @@ v1.get("/", (req, res) => {
 v1.use("/user", UserRoute);
 v1.use("/vehicle", VehicleRoute);
 v1.use("/report", ReportRoute);
+v1.use("/mechanic", MechanicRoute);
 
 module.exports = { v1 };
