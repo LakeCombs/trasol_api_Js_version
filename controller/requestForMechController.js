@@ -107,11 +107,42 @@ const mechanicAcceptMechRequest = asyncHandler(async (req, res) => {
       req.params.id,
       { mechanicId },
       { new: true }
-    );
+    )
+      .populate("userId", "-password")
+      .populate("mechanicId", "-password");
 
     if (accepting) {
       res.status(200).json(accepting);
     }
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+//this route will get all the repair a particular mechanic have completed
+//so they know how much they are doing on the platform
+//the only parameter you need is the mechanicId
+const getMehanicCompletedRepair = asyncHandler(async (req, res) => {
+  const { mechanicId } = req.body;
+  try {
+    const mechanicRapairCount = await RequestForMech.find({
+      $and: [{ mechanicId: { $eq: mechanicId } }, { completed: true }],
+    })
+      .populate("userId", "-password")
+      .exec();
+
+    return res.status(200).json(mechanicRapairCount);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+const getSingleMechRequest = asyncHandler(async (req, res) => {
+  try {
+    const getSiglerequest = await RequestForMech.findById(req.params.id)
+      .populate("userId", "-password")
+      .populate("mechanicId", "-password");
+    res.status(200).json(getSiglerequest);
   } catch (error) {
     res.status(400).json(error);
   }
@@ -123,4 +154,6 @@ module.exports = {
   getSingleUserMechRequest,
   getAllMechanicRequest,
   mechanicAcceptMechRequest,
+  getMehanicCompletedRepair,
+  getSingleMechRequest,
 };
