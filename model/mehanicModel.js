@@ -28,6 +28,9 @@ const mechanicSchema = mongoose.Schema(
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
     },
     rating: { type: Number, default: 0 },
+    completedDeals: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "RequestForMechanic" },
+    ],
   },
   { timestamps: true }
 );

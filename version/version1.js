@@ -15,6 +15,6 @@ v1.use("/user", UserRoute);
 v1.use("/vehicle", VehicleRoute);
 v1.use("/report", ReportRoute);
 v1.use("/mechanic", MechanicRoute);
-v1.use("/requestmech", RequestForMechRoute);
+v1.use("/reqmec", RequestForMechRoute);
 
 module.exports = { v1 };

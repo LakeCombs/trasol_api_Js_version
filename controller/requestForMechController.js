@@ -54,20 +54,32 @@ const editARequests = asyncHandler(async (req, res) => {
       }
     );
 
-    if (editingRequest) res.status(201).send(editingRequest);
+    console.log(editingRequest);
+
+    // this condition is here so that if the repair is completed
+    // the user cannot edit it again
+    if (editingRequest.completed) {
+      res.status(300).json({
+        error: "Sorry, Your repair is completed, have a joy ride",
+      });
+    } else {
+      res.status(201).send(editingRequest);
+    }
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
 //the key parameter to get all a single user request is the userId
-const getAllSingleMechRequest = asyncHandler(async (req, res) => {
+const getSingleUserMechRequest = asyncHandler(async (req, res) => {
   const { userId } = req.body;
   try {
     const gettingAllMyRequest = await RequestForMech.find({
       userId: { $eq: userId },
-    });
-    console.log(gettingAllMyRequest);
+    })
+      .populate("userId", "-password")
+      .populate("vehicleId")
+      .exec();
 
     res.status(200).json(gettingAllMyRequest);
   } catch (error) {
@@ -75,4 +87,40 @@ const getAllSingleMechRequest = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { requestMechanic, editARequests };
+const getAllMechanicRequest = asyncHandler(async (req, res) => {
+  try {
+    const allMechanicRequest = await RequestForMech.find()
+      .populate("userId", "-password")
+      .populate("vehicleId");
+
+    return res.status(200).json(allMechanicRequest);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+const mechanicAcceptMechRequest = asyncHandler(async (req, res) => {
+  const { mechanicId } = req.body;
+
+  try {
+    const accepting = await RequestForMech.findByIdAndUpdate(
+      req.params.id,
+      { mechanicId },
+      { new: true }
+    );
+
+    if (accepting) {
+      res.status(200).json(accepting);
+    }
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+module.exports = {
+  requestMechanic,
+  editARequests,
+  getSingleUserMechRequest,
+  getAllMechanicRequest,
+  mechanicAcceptMechRequest,
+};
