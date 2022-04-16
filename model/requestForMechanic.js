@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("../router/userRoute");
 
 const RequestForMechanic = new mongoose.Schema(
   {
@@ -8,13 +9,18 @@ const RequestForMechanic = new mongoose.Schema(
       required: true,
     },
     GPSlocation: { type: String, required: true },
-    vehicle: { type: mongoose.Schema.Types, ref: "Vehicle", required: true },
+    vehicleId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Vehicle",
+      required: true,
+    },
     description: { type: String, required: true },
     otherDetails: { type: String },
     mechanicId: { type: mongoose.Schema.Types.ObjectId, ref: "Mechanic" },
     service_rating: { type: Number },
     mechanic_rating: { type: Number },
     comment: { type: String },
+    completed: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

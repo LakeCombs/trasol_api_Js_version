@@ -1,5 +1,5 @@
-const User = require("../model/userModel");
 const asyncHandler = require("express-async-handler");
+const User = require("../model/userModel");
 const generateToken = require("../middleware/generateToken");
 
 const RegisterUser = asyncHandler(async (req, res) => {
@@ -42,7 +42,6 @@ const LoginUser = asyncHandler(async (req, res, next) => {
 
   const user = await User.findOne({ email });
   const comfirmPassword = await user.matchPassword(password);
-  console.log(comfirmPassword);
 
   if (user && comfirmPassword) {
     const UserObject = { user, token: generateToken(user._id) };
@@ -50,8 +49,6 @@ const LoginUser = asyncHandler(async (req, res, next) => {
   } else {
     res.status(404).json({ error: "You entered a wrong email or password" });
   }
-
-  console.log("after user verification");
 });
 
 //still working on this route because of te complexity of the element inside the object
@@ -86,16 +83,6 @@ const EditUser = asyncHandler(async (req, res) => {
       acct_details,
       transaction_hist,
     },
-
-    // activity: {
-    //   rating: {
-    //     ratingNo,
-    //     no_of_reviews,
-    //   },
-    // },
-    // fleet:{
-    //   fleet_size
-    // }
   };
 
   try {
@@ -142,14 +129,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
   }
 });
 
-const requestMechanic = asyncHandler(async (req, res) => {
-  const {} = req.body;
-  try {
-  } catch (error) {
-    res.status(400).json(error);
-  }
-});
-
 module.exports = {
   RegisterUser,
   LoginUser,
@@ -157,5 +136,4 @@ module.exports = {
   DeleteUser,
   getAllUsers,
   getOneUser,
-  requestMechanic,
 };
