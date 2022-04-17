@@ -159,7 +159,7 @@ const getSingleMechRequest = asyncHandler(async (req, res) => {
 });
 
 //this route take care of mechanic_rating and service rating as well as calculating
-//average mechanic rating and it is only dont when completed is true
+//average mechanic rating and it is only done when completed is true
 const mechanicRating = asyncHandler(async (req, res) => {
   const { mechanicId, service_rating, mechanic_rating } = req.body;
 
