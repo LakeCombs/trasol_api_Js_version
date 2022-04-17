@@ -1,10 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const RequestForMech = require("../model/requestForMechanic");
+const Mechanic = require("../model/mehanicModel");
 
 // i am enforcing these parameter because they are the least requirement
 // to request a mechanic and those error are for you to know what is missing
 // when you encounter error in the frontend
-
 const requestMechanic = asyncHandler(async (req, res) => {
   const { userId, GPSlocation, vehicleId, description } = req.body;
 
@@ -33,6 +33,8 @@ const requestMechanic = asyncHandler(async (req, res) => {
 
 // this route takes care of the user adding a service_rating, comment,
 //mechanic_rating as well as GPS location and description except mechanicId
+//to use this route you must enforce it to be sent only when completed is false
+//so that the mechanic completed array will be populated anyhow
 const editARequests = asyncHandler(async (req, res) => {
   const requestEdit = {
     GPSlocation: req.body.GPSlocation,
@@ -54,17 +56,22 @@ const editARequests = asyncHandler(async (req, res) => {
       }
     );
 
-    console.log(editingRequest);
+    const mechanicId = editingRequest.mechanicId;
 
-    // this condition is here so that if the repair is completed
-    // the user cannot edit it again
-    if (editingRequest.completed) {
-      res.status(300).json({
-        error: "Sorry, Your repair is completed, have a joy ride",
+    // this condition only work when the user put in completed from the frontend
+    if (editingRequest.completed === true) {
+      const Repairer = await Mechanic.findOne({
+        _id: mechanicId,
       });
-    } else {
-      res.status(201).send(editingRequest);
+      Repairer.completedRepairs = [
+        ...Repairer.completedRepairs,
+        editingRequest._id,
+      ];
+      console.log(Repairer);
+      await Repairer.save();
     }
+
+    res.status(201).send(editingRequest);
   } catch (error) {
     res.status(400).json(error);
   }
@@ -157,3 +164,5 @@ module.exports = {
   getMehanicCompletedRepair,
   getSingleMechRequest,
 };
+
+//tomorrow i will work on the mechanic rating such that it is authomated
