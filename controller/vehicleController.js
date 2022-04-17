@@ -31,7 +31,6 @@ const createVehicle = asyncHandler(async (req, res) => {
         vehicle._id,
       ];
 
-      console.log(vehicle._id);
       await VehicleOwner.save();
     }
     return res.status(200).json(vehicle);

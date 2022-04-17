@@ -17,8 +17,9 @@ const RequestForMechanic = new mongoose.Schema(
     description: { type: String, required: true },
     otherDetails: { type: String },
     mechanicId: { type: mongoose.Schema.Types.ObjectId, ref: "Mechanic" },
-    service_rating: { type: Number },
-    mechanic_rating: { type: Number },
+    //the default is null because null + a number give back that number
+    service_rating: { type: Number, default: 0 },
+    mechanic_rating: { type: Number, default: 0 },
     comment: { type: String },
     completed: { type: Boolean, default: false },
   },

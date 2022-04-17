@@ -8,6 +8,7 @@ const {
   getSingleUserMechRequest,
   getMehanicCompletedRepair,
   getSingleMechRequest,
+  mechanicRating,
 } = require("../controller/requestForMechController");
 
 const RequestForMechRoute = express.Router();
@@ -19,5 +20,6 @@ RequestForMechRoute.get("/completed", getMehanicCompletedRepair);
 RequestForMechRoute.put("/user/:id", protect, editARequests);
 RequestForMechRoute.get("/user", protect, getSingleUserMechRequest);
 RequestForMechRoute.put("/accept/:id", protect, mechanicAcceptMechRequest);
+RequestForMechRoute.put("/rate/:id", mechanicRating);
 
 module.exports = RequestForMechRoute;

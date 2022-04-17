@@ -31,8 +31,8 @@ const requestMechanic = asyncHandler(async (req, res) => {
   }
 });
 
-// this route takes care of the user adding a service_rating, comment,
-//mechanic_rating as well as GPS location and description except mechanicId
+// this route takes care of the user adding a comment,
+//as well as GPS location and description except mechanicId
 //to use this route you must enforce it to be sent only when completed is false
 //so that the mechanic completed array will be populated anyhow
 const editARequests = asyncHandler(async (req, res) => {
@@ -46,6 +46,9 @@ const editARequests = asyncHandler(async (req, res) => {
     vehicleId: req.body.vehicleId,
     completed: req.body.completed,
   };
+
+  //note this function is not taking care of mechanic rating because the rating will be an average
+  // and i need some more logic to put in place
 
   try {
     const editingRequest = await RequestForMech.findByIdAndUpdate(
@@ -112,7 +115,7 @@ const mechanicAcceptMechRequest = asyncHandler(async (req, res) => {
   try {
     const accepting = await RequestForMech.findByIdAndUpdate(
       req.params.id,
-      { mechanicId },
+      { mechanicId: req.body.mechanicId },
       { new: true }
     )
       .populate("userId", "-password")
@@ -155,6 +158,60 @@ const getSingleMechRequest = asyncHandler(async (req, res) => {
   }
 });
 
+//this route take care of mechanic_rating and service rating as well as calculating
+//average mechanic rating and it is only dont when completed is true
+const mechanicRating = asyncHandler(async (req, res) => {
+  const { mechanicId, service_rating, mechanic_rating } = req.body;
+
+  const getThisService = await RequestForMech.findById(req.params.id);
+
+  if (!getThisService.completed) {
+    throw new Error(
+      "Thank you , kindly rate us after the service is completed"
+    );
+  }
+
+  try {
+    const rateMechanic = await RequestForMech.findOneAndUpdate(
+      req.params.id,
+      {
+        service_rating: req.body.service_rating,
+        mechanic_rating: req.body.mechanic_rating,
+      },
+      { new: true }
+    );
+
+    getThisService.service_rating = service_rating;
+    getThisService.mechanic_rating = mechanic_rating;
+    await getThisService.save();
+
+    const getMechanicFromRequest = await RequestForMech.find({
+      $and: [{ completed: true }, { mechanicId: { $eq: mechanicId } }],
+    });
+
+    const answerArray = Object.values(getMechanicFromRequest);
+
+    let sum = 0;
+
+    for (let i = 0; i < answerArray.length; i++) {
+      sum += answerArray[i].mechanic_rating;
+    }
+
+    const mechanicAverageRating = sum / answerArray.length;
+
+    await Mechanic.findOneAndUpdate(
+      {
+        _id: mechanicId,
+      },
+      { rating: mechanicAverageRating }
+    );
+
+    return res.status(200).json(await getThisService.save());
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 module.exports = {
   requestMechanic,
   editARequests,
@@ -163,6 +220,5 @@ module.exports = {
   mechanicAcceptMechRequest,
   getMehanicCompletedRepair,
   getSingleMechRequest,
+  mechanicRating,
 };
-
-//tomorrow i will work on the mechanic rating such that it is authomated
