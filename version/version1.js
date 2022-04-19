@@ -4,6 +4,8 @@ const UserRoute = require("../router/userRoute");
 const VehicleRoute = require("../router/vehicleRoute");
 const MechanicRoute = require("../router/mechanicRoute");
 const RequestForMechRoute = require("../router/requestForMectRoute");
+const product_route = require("../router/product.route");
+const vendorRoute = require("../router/vendor.route");
 
 const v1 = express.Router();
 
@@ -16,5 +18,7 @@ v1.use("/vehicle", VehicleRoute);
 v1.use("/report", ReportRoute);
 v1.use("/mechanic", MechanicRoute);
 v1.use("/reqmec", RequestForMechRoute);
+v1.use("/vendor", vendorRoute);
+v1.use("/product", product_route);
 
 module.exports = { v1 };

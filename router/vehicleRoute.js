@@ -12,7 +12,7 @@ const protect = require("../middleware/authenticationMiddeware");
 
 const VehicleRoute = express.Router();
 
-VehicleRoute.post("/create", protect, createVehicle);
+VehicleRoute.post("/", protect, createVehicle);
 VehicleRoute.get("/", protect, getAllVehicle);
 VehicleRoute.get("/user", protect, getUserVehicle);
 VehicleRoute.get("/filter", protect, getVehicleByFilter);
