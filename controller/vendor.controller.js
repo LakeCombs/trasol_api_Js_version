@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Vendor = require("../model/vehicleModels");
+const Vendor = require("../model/vendor.model");
 
 const create_vendor = asyncHandler(async (req, res) => {
   const { vendor_name, vendor_location } = req.body;
@@ -46,7 +46,7 @@ const edit_vendor_by_id = asyncHandler(async (req, res) => {
 //this route delete a vendoer by id
 const delete_vendor = asyncHandler(async (req, res) => {
   try {
-    const deleting_vendor = await Vendor.findByIdAndDerrorelete(req.params.id);
+    const deleting_vendor = await Vendor.findByIdAndDelete(req.params.id);
     res.status(200).json(deleting_vendor);
   } catch (error) {
     res.status(400).json(error);
@@ -55,15 +55,16 @@ const delete_vendor = asyncHandler(async (req, res) => {
 
 //finding a vendor who have a particuler name and sell a particulear product
 const get_vendor_by_product_type = asyncHandler(async (req, res) => {
-  const { vendor_location, product_type } = req.body;
+  const { product_type } = req.body;
   try {
     const finding_by_product = await Vendor.find({
-      $and: [{ vendor_location }, { product_type }],
+      product_type: product_type,
     });
 
-    if (finding_by_product) {
-      return res.status(200).json(finding_by_product);
-    }
+    // if (finding_by_product) {
+    //   console.log("hello food");
+    return res.status(200).json(finding_by_product);
+    // }
   } catch (error) {
     res.status(400).json(error);
   }
