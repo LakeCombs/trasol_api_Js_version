@@ -5,8 +5,8 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const connectDb = require("./db/mongo");
 const {
-  notFound,
-  errorHandler,
+	notFound,
+	errorHandler
 } = require("./middleware/errorHandlerMiddlerware");
 const { v1 } = require("./version/version1");
 const PORT = process.env.PORT || 3000;
@@ -15,7 +15,7 @@ const app = express();
 connectDb();
 
 app.get("/", (req, res) => {
-  res.send("Welcome to transol api v1");
+	res.send("Welcome to transol api v1");
 });
 
 app.use(express.json());
@@ -29,5 +29,5 @@ app.use(notFound);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`app is running on port on ${PORT} `);
+	console.log(`app is running on port on ${PORT} `);
 });

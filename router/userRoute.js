@@ -1,14 +1,14 @@
 const express = require("express");
 const {
-  RegisterUser,
-  LoginUser,
-  EditUser,
-  DeleteUser,
-  getAllUsers,
-  getOneUser,
+	RegisterUser,
+	LoginUser,
+	EditUser,
+	DeleteUser,
+	getAllUsers,
+	getOneUser
 } = require("../controller/userController");
 const protect = require("../middleware/authenticationMiddeware");
-
+const decode_token = require("../middleware/decode.token");
 const UserRoute = express.Router();
 
 //note the order of this arrnagement is very important
