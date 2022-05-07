@@ -7,6 +7,7 @@ const RequestForMechRoute = require("../router/requestForMectRoute");
 const product_route = require("../router/product.route");
 const vendorRoute = require("../router/vendor.route");
 const subscription_route = require("../router/subscription.route");
+const tow_route = require("../router/Tow.route");
 
 const v1 = express.Router();
 
@@ -22,6 +23,6 @@ v1.use("/reqmec", RequestForMechRoute);
 v1.use("/vendor", vendorRoute);
 v1.use("/product", product_route);
 v1.use("/subscribe", subscription_route);
-
+v1.use("/tow", tow_route);
 
 module.exports = { v1 };

@@ -25,14 +25,7 @@ const requestMechanic = asyncHandler(async (req, res) => {
 		throw new Error("Please login to contunue");
 	}
 
-	const getUser = await User.findOne({ _id: userId }).populate({
-		path: "finance",
-		populate: { path: "subscription_plan" }
-	});
-
-	const get_repair_left = await Subscription.findById(
-		getUser.finance.subscription_plan._id
-	);
+	const get_repair_left = await Subscription.findOne({ userId: userId });
 
 	if (get_repair_left.repairs <= 0) {
 		res.status(403);

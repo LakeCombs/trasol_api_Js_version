@@ -23,7 +23,7 @@ var User = require("../model/userModel"); // i am enforcing these parameter beca
 
 
 var requestMechanic = asyncHandler(function _callee(req, res) {
-  var _req$body, userId, GPSlocation, vehicleId, description, getUser, get_repair_left, requesting;
+  var _req$body, userId, GPSlocation, vehicleId, description, get_repair_left, requesting;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -56,53 +56,43 @@ var requestMechanic = asyncHandler(function _callee(req, res) {
 
         case 7:
           _context.next = 9;
-          return regeneratorRuntime.awrap(User.findOne({
-            _id: userId
-          }).populate({
-            path: "finance",
-            populate: {
-              path: "subscription_plan"
-            }
+          return regeneratorRuntime.awrap(Subscription.findOne({
+            userId: userId
           }));
 
         case 9:
-          getUser = _context.sent;
-          _context.next = 12;
-          return regeneratorRuntime.awrap(Subscription.findById(getUser.finance.subscription_plan._id));
-
-        case 12:
           get_repair_left = _context.sent;
 
           if (!(get_repair_left.repairs <= 0)) {
-            _context.next = 18;
+            _context.next = 15;
             break;
           }
 
           res.status(403);
           throw new Error("sorry you cannot request for mechanic, subscribe and try again");
 
-        case 18:
-          _context.prev = 18;
-          _context.next = 21;
+        case 15:
+          _context.prev = 15;
+          _context.next = 18;
           return regeneratorRuntime.awrap(RequestForMech.create(req.body));
 
-        case 21:
+        case 18:
           requesting = _context.sent;
           res.status(200).json(requesting);
-          _context.next = 28;
+          _context.next = 25;
           break;
 
-        case 25:
-          _context.prev = 25;
-          _context.t0 = _context["catch"](18);
+        case 22:
+          _context.prev = 22;
+          _context.t0 = _context["catch"](15);
           res.status(400).json(_context.t0);
 
-        case 28:
+        case 25:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[18, 25]]);
+  }, null, null, [[15, 22]]);
 }); //this route need the id of the requst for mechanic and is updated by the mechanics
 //indicating he has started the repair
 
