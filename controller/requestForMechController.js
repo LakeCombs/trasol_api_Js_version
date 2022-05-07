@@ -2,10 +2,12 @@ const asyncHandler = require("express-async-handler");
 const RequestForMech = require("../model/requestForMechanic");
 const Mechanic = require("../model/mehanicModel");
 const Subscription = require("../model/subscription.model");
+const User = require("../model/userModel");
 
 // i am enforcing these parameter because they are the least requirement
 // to request a mechanic and those error are for you to know what is missing
-// when you encounter error in the frontend
+// when you encounter error in the frontend also if the user subscription plan repair option is 0 or less
+//the function will throw an error
 const requestMechanic = asyncHandler(async (req, res) => {
 	const { userId, GPSlocation, vehicleId, description } = req.body;
 
@@ -23,15 +25,79 @@ const requestMechanic = asyncHandler(async (req, res) => {
 		throw new Error("Please login to contunue");
 	}
 
-	const check_user_subscription = await Subscription.findOne({
-		userId: userId
+	const getUser = await User.findOne({ _id: userId }).populate({
+		path: "finance",
+		populate: { path: "subscription_plan" }
 	});
 
-	// console.log(check_user_subscription.ra);
-	try {
-		const requesting = await RequestForMech.create(req.body);
+	const get_repair_left = await Subscription.findById(
+		getUser.finance.subscription_plan._id
+	);
 
-		res.status(200).json(requesting);
+	if (get_repair_left.repairs <= 0) {
+		res.status(403);
+		throw new Error(
+			"sorry you cannot request for mechanic, subscribe and try again"
+		);
+	} else {
+		try {
+			const requesting = await RequestForMech.create(req.body);
+
+			res.status(200).json(requesting);
+		} catch (error) {
+			res.status(400).json(error);
+		}
+	}
+});
+
+//this route need the id of the requst for mechanic and is updated by the mechanics
+//indicating he has started the repair
+const mech_start_repairs = asyncHandler(async (req, res) => {
+	try {
+		const start_repair = await RequestForMech.findByIdAndUpdate(
+			req.params.id,
+			{
+				start_time: Date.now(),
+				start_task: true
+			},
+			{ new: true }
+		);
+		const get_user = await User.findById(start_repair.userId).populate({
+			path: "finance",
+			populate: { path: "subscription_plan" }
+		});
+		const user_subscription = get_user.finance.subscription_plan._id;
+		const get_subscription = await Subscription.findById(user_subscription);
+		const updated_repairs_count = get_subscription.repairs - 1;
+
+		await Subscription.findByIdAndUpdate(
+			user_subscription,
+			{
+				repairs: updated_repairs_count
+			},
+			{ new: true }
+		);
+
+		res.status(202).json(start_repair);
+	} catch (error) {
+		res.status(400).json(error);
+	}
+});
+
+//this route take the id of the request for mech and it been updated by the s
+//mechanic
+const mech_finish_repair = asyncHandler(async (req, res) => {
+	try {
+		const finsh_repair = await RequestForMech.findByIdAndUpdate(
+			req.params.id,
+			{
+				finish_time: Date.now(),
+				finish_task: true
+			},
+			{ new: true }
+		);
+
+		res.status(202).json(finsh_repair);
 	} catch (error) {
 		res.status(400).json(error);
 	}
@@ -226,5 +292,7 @@ module.exports = {
 	mechanicAcceptMechRequest,
 	getMehanicCompletedRepair,
 	getSingleMechRequest,
-	mechanicRating
+	mechanicRating,
+	mech_start_repairs,
+	mech_finish_repair
 };

@@ -30,7 +30,6 @@ var RequestForMechanic = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Mechanic"
   },
-  //the default is null because null + a number give back that number
   service_rating: {
     type: Number,
     "default": 0

@@ -77,29 +77,5 @@ subscriptionModel.pre("save", function _callee(subscription_type, next) {
       }
     }
   }, null, this);
-}); // subscriptionModel.methods.roll_over_subscription = async function (
-// 	subscription_plan
-// ) {
-// 	if (subscription_plan === "starter") {
-// 		this.repairs = this.repairs + 4;
-// 		this.tow_service = this.tow_service + 2;
-// 		this.alternative_free_ride = false;
-// 		this.unlimited_support = false;
-// 		this.help_a_friend = false;
-// 	} else if (subscription_plan === "classic") {
-// 		this.repairs = this.repairs + 8;
-// 		this.tow_service = this.tow_service + 4;
-// 		this.alternative_free_ride = false;
-// 		this.unlimited_support = false;
-// 		this.help_a_friend = false;
-// 	} else if (subscription_plan === "luxuriate") {
-// 		this.repairs = this.repairs + 1000;
-// 		this.tow_service = this.tow_service + 1000;
-// 		this.alternative_free_ride = true;
-// 		this.unlimited_support = true;
-// 		this.help_a_friend = true;
-// 		this.choose_a_specialist = true;
-// 	} else return;
-// };
-
+});
 module.exports = mongoose.model("Subscription", subscriptionModel);
