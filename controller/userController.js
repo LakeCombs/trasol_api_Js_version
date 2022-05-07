@@ -41,16 +41,30 @@ const LoginUser = asyncHandler(async (req, res, next) => {
 	if (!email || !password) {
 		throw new Error("fill in the required field");
 	}
+	//  options: {strictPopulate: false}}
+	const user = await User.findOne({ email }).populate({
+		path: "finance",
+		populate: {
+			path: "subscription_plan"
+		}
+	});
 
-	const user = await User.findOne({ email });
-	if (user && (await user.matchPassword(password))) {
-		const UserObject = { user, token: generateToken(user._id) };
-		res.status(201).json(UserObject);
-	}
+	const confirmPassword = await user.matchPassword(password);
+	console.log(confirmPassword);
 
-	if (!user) {
-		res.status(404);
-		throw new Error("User not found, register to login");
+	try {
+		if (user && (await user.matchPassword(password))) {
+			console.log("user can now login");
+			const UserObject = { user, token: generateToken(user._id) };
+			res.status(201).json(UserObject);
+		}
+
+		if (!user) {
+			res.status(404);
+			throw new Error("User not found, register to login");
+		}
+	} catch (error) {
+		res.status(400).json(error);
 	}
 });
 

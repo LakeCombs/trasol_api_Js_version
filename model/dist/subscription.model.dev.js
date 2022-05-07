@@ -51,9 +51,10 @@ subscriptionModel.pre("save", function _callee(subscription_type, next) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          // if(!this.isModified){
-          // 	next();
-          // }
+          if (!this.isModified) {
+            next();
+          }
+
           if (this.subscription_plan == "starter") {
             this.repairs = 4;
             this.tow_service = 2;
@@ -67,53 +68,38 @@ subscriptionModel.pre("save", function _callee(subscription_type, next) {
             this.alternative_free_ride = true;
             this.unlimited_support = true;
             this.help_a_friend = true;
+            this.choose_a_specialist = true;
           }
 
-        case 1:
+        case 2:
         case "end":
           return _context.stop();
       }
     }
   }, null, this);
-});
-
-subscriptionModel.methods.roll_over_subscription = function _callee2(subscription_plan) {
-  return regeneratorRuntime.async(function _callee2$(_context2) {
-    while (1) {
-      switch (_context2.prev = _context2.next) {
-        case 0:
-          if (!(subscription_plan === "starter")) {
-            _context2.next = 4;
-            break;
-          }
-
-          return _context2.abrupt("return", (this.repairs = +4, this.tow_service = +2, this.alternative_free_ride = false, this.unlimited_support = false, this.help_a_friend = false));
-
-        case 4:
-          if (!(subscription_plan === "classic")) {
-            _context2.next = 8;
-            break;
-          }
-
-          return _context2.abrupt("return", (this.repairs = +8, this.tow_service = +4, this.alternative_free_ride = false, this.unlimited_support = false, this.help_a_friend = false));
-
-        case 8:
-          if (!(subscription_plan === "luxuriate")) {
-            _context2.next = 12;
-            break;
-          }
-
-          return _context2.abrupt("return", (this.repairs = +1000, this.tow_service = +1000, this.alternative_free_ride = true, this.unlimited_support = true, this.help_a_friend = true));
-
-        case 12:
-          return _context2.abrupt("return");
-
-        case 13:
-        case "end":
-          return _context2.stop();
-      }
-    }
-  }, null, this);
-};
+}); // subscriptionModel.methods.roll_over_subscription = async function (
+// 	subscription_plan
+// ) {
+// 	if (subscription_plan === "starter") {
+// 		this.repairs = this.repairs + 4;
+// 		this.tow_service = this.tow_service + 2;
+// 		this.alternative_free_ride = false;
+// 		this.unlimited_support = false;
+// 		this.help_a_friend = false;
+// 	} else if (subscription_plan === "classic") {
+// 		this.repairs = this.repairs + 8;
+// 		this.tow_service = this.tow_service + 4;
+// 		this.alternative_free_ride = false;
+// 		this.unlimited_support = false;
+// 		this.help_a_friend = false;
+// 	} else if (subscription_plan === "luxuriate") {
+// 		this.repairs = this.repairs + 1000;
+// 		this.tow_service = this.tow_service + 1000;
+// 		this.alternative_free_ride = true;
+// 		this.unlimited_support = true;
+// 		this.help_a_friend = true;
+// 		this.choose_a_specialist = true;
+// 	} else return;
+// };
 
 module.exports = mongoose.model("Subscription", subscriptionModel);

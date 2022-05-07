@@ -75,7 +75,7 @@ var RegisterUser = asyncHandler(function _callee(req, res) {
 }); // this is the login routes
 
 var LoginUser = asyncHandler(function _callee2(req, res, next) {
-  var _req$body2, email, password, user, UserObject;
+  var _req$body2, email, password, user, confirmPassword, UserObject;
 
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
@@ -94,50 +94,72 @@ var LoginUser = asyncHandler(function _callee2(req, res, next) {
           _context2.next = 5;
           return regeneratorRuntime.awrap(User.findOne({
             email: email
+          }).populate({
+            path: "finance",
+            populate: {
+              path: "subscription_plan"
+            }
           }));
 
         case 5:
           user = _context2.sent;
+          _context2.next = 8;
+          return regeneratorRuntime.awrap(user.matchPassword(password));
+
+        case 8:
+          confirmPassword = _context2.sent;
+          console.log(confirmPassword);
+          _context2.prev = 10;
           _context2.t0 = user;
 
           if (!_context2.t0) {
-            _context2.next = 11;
+            _context2.next = 16;
             break;
           }
 
-          _context2.next = 10;
+          _context2.next = 15;
           return regeneratorRuntime.awrap(user.matchPassword(password));
 
-        case 10:
+        case 15:
           _context2.t0 = _context2.sent;
 
-        case 11:
+        case 16:
           if (!_context2.t0) {
-            _context2.next = 14;
+            _context2.next = 20;
             break;
           }
 
+          console.log("user can now login");
           UserObject = {
             user: user,
             token: generateToken(user._id)
           };
           res.status(201).json(UserObject);
 
-        case 14:
+        case 20:
           if (user) {
-            _context2.next = 17;
+            _context2.next = 23;
             break;
           }
 
           res.status(404);
           throw new Error("User not found, register to login");
 
-        case 17:
+        case 23:
+          _context2.next = 28;
+          break;
+
+        case 25:
+          _context2.prev = 25;
+          _context2.t1 = _context2["catch"](10);
+          res.status(400).json(_context2.t1);
+
+        case 28:
         case "end":
           return _context2.stop();
       }
     }
-  });
+  }, null, null, [[10, 25]]);
 }); //still working on this route because of te complexity of the element inside the object
 
 var EditUser = asyncHandler(function _callee3(req, res) {

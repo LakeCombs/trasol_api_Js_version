@@ -23,4 +23,5 @@ v1.use("/vendor", vendorRoute);
 v1.use("/product", product_route);
 v1.use("/subscribe", subscription_route);
 
+
 module.exports = { v1 };

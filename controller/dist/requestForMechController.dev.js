@@ -12,13 +12,15 @@ var asyncHandler = require("express-async-handler");
 
 var RequestForMech = require("../model/requestForMechanic");
 
-var Mechanic = require("../model/mehanicModel"); // i am enforcing these parameter because they are the least requirement
+var Mechanic = require("../model/mehanicModel");
+
+var Subscription = require("../model/subscription.model"); // i am enforcing these parameter because they are the least requirement
 // to request a mechanic and those error are for you to know what is missing
 // when you encounter error in the frontend
 
 
 var requestMechanic = asyncHandler(function _callee(req, res) {
-  var _req$body, userId, GPSlocation, vehicleId, description, requesting;
+  var _req$body, userId, GPSlocation, vehicleId, description, check_user_subscription, requesting;
 
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
@@ -50,27 +52,34 @@ var requestMechanic = asyncHandler(function _callee(req, res) {
           throw new Error("Please login to contunue");
 
         case 7:
-          _context.prev = 7;
-          _context.next = 10;
+          _context.next = 9;
+          return regeneratorRuntime.awrap(Subscription.findOne({
+            userId: userId
+          }));
+
+        case 9:
+          check_user_subscription = _context.sent;
+          _context.prev = 10;
+          _context.next = 13;
           return regeneratorRuntime.awrap(RequestForMech.create(req.body));
 
-        case 10:
+        case 13:
           requesting = _context.sent;
           res.status(200).json(requesting);
-          _context.next = 17;
+          _context.next = 20;
           break;
 
-        case 14:
-          _context.prev = 14;
-          _context.t0 = _context["catch"](7);
+        case 17:
+          _context.prev = 17;
+          _context.t0 = _context["catch"](10);
           res.status(400).json(_context.t0);
 
-        case 17:
+        case 20:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[7, 14]]);
+  }, null, null, [[10, 17]]);
 }); // this route takes care of the user adding a comment,
 //as well as GPS location and description except mechanicId
 //to use this route you must enforce it to be sent only when completed is false

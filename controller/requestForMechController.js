@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const RequestForMech = require("../model/requestForMechanic");
 const Mechanic = require("../model/mehanicModel");
+const Subscription = require("../model/subscription.model");
 
 // i am enforcing these parameter because they are the least requirement
 // to request a mechanic and those error are for you to know what is missing
@@ -22,6 +23,11 @@ const requestMechanic = asyncHandler(async (req, res) => {
 		throw new Error("Please login to contunue");
 	}
 
+	const check_user_subscription = await Subscription.findOne({
+		userId: userId
+	});
+
+	// console.log(check_user_subscription.ra);
 	try {
 		const requesting = await RequestForMech.create(req.body);
 
